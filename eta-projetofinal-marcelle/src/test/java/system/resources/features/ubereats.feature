@@ -1,5 +1,5 @@
 @tc1
-Feature:  usuario está na tela de cadastro
+Feature:  usuario está na tela de cadastro cc
 
   Background:
     Given acessar pagina inicial
