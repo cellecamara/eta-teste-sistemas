@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
     features = "src/test/java/system/resources/features",
     glue="system/stepDefinitions",
-        tags = "@",
+        tags = "@search",
         snippets = CucumberOptions.SnippetType.CAMELCASE,
         plugin = "pretty",
         monochrome = true)

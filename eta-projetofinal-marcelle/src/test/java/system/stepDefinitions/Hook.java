@@ -7,11 +7,9 @@ import system.helpers.DriverManager;
 public class Hook {
 
     @Before()
-    public void inicializar(){
-    }
 
     @After()
-    public void finalizar(){
+    public void endSession(){
         DriverManager.endSession();
     }
 }

@@ -14,11 +14,11 @@ public class MainPage {
     private WebDriver driver;
     private WebDriverWait wait;
     private By locationField = By.id("location-typeahead-home-input");
-    private By searchButton = By.cssSelector("button.be.bf.bg.bh.bi.en.ag.bk.bl.b6.bm.bn.bo.eo.ep.br.bs.c1.eq");
-    private By selectedLocation = By.cssSelector("header > div.dd.dm > div > a.bx.by.bg.c9.b3.ca.cb.cc.br.bs.ag.as.bk.bh.ek.dl.b6 > div.h3.an.al");
-    private By placeCard = By.cssSelector("div.gk.kl.hw.go.gp.hx > div:first-child");
-    private By locationList = By.id("location-typeahead-home-menu");
-    private By deliveryInfo = By.id("#wrapper > header > div.dd.dm > div > a.bx.by.bg.c9.b3.ca.cb.cc.br.bs.ag.as.bk.bh.ek.dl.b6");
+    private By searchButton = By.cssSelector("#main-content > div > div > div > div > button");
+    private By selectedLocation = By.cssSelector("#wrapper > header > div > div > a:last-of-type > div:nth-child(3)");
+    private By deliveryInfoButton = By.cssSelector("#wrapper > header > div > div > a:last-of-type");
+    private By restaurantsList = By.cssSelector("#main-content > div > div:last-child > div:last-child");
+    private DeliveryDetailsDialog deliveryDialog;
 
     public MainPage() {
         driver = DriverManager.getDriver();
@@ -28,47 +28,51 @@ public class MainPage {
     public void accessPage() {
         driver.get(MAIN_PAGE);
         try {
-            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#main-content")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(searchButton));
         } catch (Exception e) {
         }
     }
 
     public String getSelectedLocation(){
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(deliveryInfo));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(selectedLocation));
         } catch (Exception e) {
         }
         WebElement location = driver.findElement(selectedLocation);
-        System.out.println(location.getText());
-        System.out.println(driver.getCurrentUrl());
         return location.getText();
 
-
-//        //WebElement location = driver.findElement(By.cssSelector("header > div.dd.dm > div > a.bx.by.bg.c9.b3.ca.cb.cc.br.bs.ag.as.bk.bh.ek.dl.b6 > div.h3.an.al"));
-//        WebElement location = driver.findElement(currentLocation);
-//        System.out.println(location.getText());
-//        return location.getText();
     }
     
     public void fillInAddress(String local){
         driver.findElement(locationField).sendKeys(local,Keys.ENTER);
     }
 
-    public void selectLocationFromResults(){
-        //driver.findElement(locationList)
+    public boolean isListOfRestaurantsVisible(){
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(restaurantsList));
+        } catch (Exception e) {
+        }
+        return driver.findElement(restaurantsList).isDisplayed();
     }
 
     public void clickSearch(){
-        wait = new WebDriverWait(driver, 15);
-        //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
         try {
             wait.until(ExpectedConditions.elementToBeClickable(searchButton));
             driver.findElement(searchButton).click();
-            System.out.println(driver.getCurrentUrl());
         } catch (Exception e) {
         }
-
     }
 
+    public void scheduleDelivery(String deliveryTime){
+        deliveryDialog = new DeliveryDetailsDialog();
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(deliveryInfoButton));
+            driver.findElement(deliveryInfoButton).click();
+            if (deliveryDialog.isVisible()){
+                deliveryDialog.clickSchedule(deliveryTime);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 }
